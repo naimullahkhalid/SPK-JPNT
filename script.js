@@ -1,25 +1,18 @@
 const sheetCSVUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRNw6wkBGxAA0fupBuFnTFQnxbmQblW2OQe-OYw1-VARqugDGcgm4zWenpRocDn3uV-rrOOqo-22asR/pub?gid=0&single=true&output=csv'; 
 
-// --- LOGIK SIDEBAR (LAPTOP & MOBILE) ---
-const sidebar = document.getElementById('sidebar');
-const mainContent = document.getElementById('main-content');
+// --- LOGIK SIDEBAR (BEBAS BUG) ---
+const body = document.body;
 const backdrop = document.getElementById('sidebarBackdrop');
 const toggleBtn = document.getElementById('toggleBtn');
 const closeBtnMobile = document.getElementById('closeSidebarMobile');
 
 function toggleSidebar() {
-    const isDesktop = window.innerWidth >= 768;
-    
-    if (isDesktop) {
-        // Toggle untuk Desktop (Guna md: prefix)
-        sidebar.classList.toggle('md:translate-x-0');
-        sidebar.classList.toggle('md:-translate-x-full');
-        mainContent.classList.toggle('md:ml-72');
-        mainContent.classList.toggle('md:ml-0');
+    if (window.innerWidth >= 768) {
+        // Desktop: Tambah class 'sidebar-collapsed' ke tag body
+        body.classList.toggle('sidebar-collapsed');
     } else {
-        // Toggle untuk Mobile
-        sidebar.classList.toggle('-translate-x-full');
-        sidebar.classList.toggle('translate-x-0');
+        // Mobile: Tambah class 'sidebar-open' ke tag body
+        body.classList.toggle('sidebar-open');
         backdrop.classList.toggle('hidden');
     }
 }
@@ -28,22 +21,29 @@ toggleBtn.addEventListener('click', toggleSidebar);
 closeBtnMobile.addEventListener('click', toggleSidebar);
 backdrop.addEventListener('click', toggleSidebar);
 
+// Tutup sidebar jika pengguna resize skrin dari mobile ke desktop
+window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) {
+        body.classList.remove('sidebar-open');
+        backdrop.classList.add('hidden');
+    }
+});
+
 // --- LOGIK DROPDOWN MENU ---
 function toggleDropdown(menuId, iconId) {
     const menu = document.getElementById(menuId);
     const icon = document.getElementById(iconId);
-    
     menu.classList.toggle('open');
     icon.classList.toggle('rotate-180');
 }
 
-// --- PENGURUSAN DATA & REFRESH ---
+// --- PENGURUSAN DATA & MASA SEMASA ---
 const refreshBtn = document.getElementById('refreshBtn');
 const refreshIcon = document.getElementById('refreshIcon');
 
 refreshBtn.addEventListener('click', () => {
     refreshIcon.classList.add('fa-spin');
-    document.getElementById('lastUpdated').innerText = "Menyegerak data...";
+    document.getElementById('lastUpdated').innerText = "Mengemaskini...";
     fetchData();
 });
 
@@ -52,11 +52,12 @@ Chart.defaults.color = '#64748b';
 
 function updateTimestamp() {
     const now = new Date();
-    // Format: 5 Apr 2026, 01:53 PTG
-    const timeString = now.toLocaleString('ms-MY', { 
+    // Paparan Format: 5 Apr 2026, 02:00 PTG
+    const options = { 
         day: 'numeric', month: 'short', year: 'numeric', 
         hour: '2-digit', minute: '2-digit', hour12: true 
-    });
+    };
+    const timeString = now.toLocaleString('ms-MY', options);
     document.getElementById('lastUpdated').innerText = timeString;
 }
 
@@ -67,7 +68,7 @@ function fetchData() {
         complete: function(results) {
             const data = results.data.filter(row => row['NAMA SEKOLAH'] && row['NAMA SEKOLAH'].trim() !== ''); 
             processDashboard(data);
-            updateTimestamp(); // Update masa bila data siap ditarik
+            updateTimestamp(); // Paparkan masa semasa bila data siap dimuat turun
             setTimeout(() => refreshIcon.classList.remove('fa-spin'), 500);
         }
     });
