@@ -1,6 +1,6 @@
 // --- MASUKKAN PAUTAN CSV GOOGLE SHEET ANDA DI SINI ---
 // Gantikan URL di bawah dengan URL yang anda dapat dari 'Publish to web'
-const sheetCSVUrl = 'MASUKKAN_PAUTAN_CSV_ANDA_DI_SINI'; 
+const sheetCSVUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRNw6wkBGxAA0fupBuFnTFQnxbmQblW2OQe-OYw1-VARqugDGcgm4zWenpRocDn3uV-rrOOqo-22asR/pub?gid=0&single=true&output=csv'; 
 
 // Fungsi utama untuk mengambil dan memproses data
 function fetchData() {
