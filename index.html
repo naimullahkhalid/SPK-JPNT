@@ -23,8 +23,31 @@
     
     <style>
         body { background-color: #f8fafc; overflow: hidden; }
-        /* Transisi lancar */
-        #sidebar, #main-content { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* --- KAWALAN SIDEBAR CSS TULEN (Kalis Bug) --- */
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        #main-content { transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Desktop: Default Terbuka */
+        @media (min-width: 768px) {
+            #sidebar { transform: translateX(0); }
+            #main-content { margin-left: 18rem; } /* 18rem = w-72 */
+            
+            /* Bila Butang Ditekan (Tutup) */
+            body.sidebar-collapsed #sidebar { transform: translateX(-100%); }
+            body.sidebar-collapsed #main-content { margin-left: 0; }
+        }
+        
+        /* Mobile: Default Tertutup */
+        @media (max-width: 767px) {
+            #sidebar { transform: translateX(-100%); }
+            #main-content { margin-left: 0; }
+            
+            /* Bila Butang Ditekan (Buka) */
+            body.sidebar-open #sidebar { transform: translateX(0); }
+        }
+
+        /* Transisi Dropdown */
         .dropdown-content { transition: max-height 0.3s ease-out; overflow: hidden; max-height: 0; }
         .dropdown-content.open { max-height: 200px; }
     </style>
@@ -33,7 +56,7 @@
 
     <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/50 z-20 hidden transition-opacity"></div>
 
-    <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-[#0f172a] text-slate-300 flex flex-col z-30 shadow-2xl md:shadow-none transform -translate-x-full md:translate-x-0">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-[#0f172a] text-slate-300 flex flex-col z-30 shadow-2xl md:shadow-none">
         <div class="h-20 flex items-center justify-between px-8 border-b border-slate-800">
             <div class="flex items-center">
                 <div class="bg-brand-500 p-2 rounded-lg mr-3 shadow-lg shadow-brand-500/20">
@@ -82,7 +105,7 @@
         </nav>
     </aside>
 
-    <div id="main-content" class="flex-1 flex flex-col overflow-y-auto w-full min-h-screen md:ml-72">
+    <div id="main-content" class="flex-1 flex flex-col overflow-y-auto w-full min-h-screen">
         
         <header class="w-full bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-20 flex items-center justify-between px-4 md:px-8 py-4 h-20 shrink-0">
             <div class="flex items-center min-w-0">
@@ -92,8 +115,9 @@
                 
                 <div class="flex flex-col min-w-0">
                     <h1 class="text-lg md:text-2xl font-bold text-slate-800 leading-tight truncate">Dashboard PPKI</h1>
-                    <p class="text-[10px] md:text-xs text-slate-500 font-medium mt-0.5 truncate">
-                        <i class="fa-solid fa-cloud-arrow-down mr-1"></i>Data terkini: <span id="lastUpdated" class="font-bold text-brand-600">Menyegerak...</span>
+                    <p class="text-[10px] md:text-xs text-slate-500 font-medium mt-0.5 truncate flex items-center">
+                        <i class="fa-solid fa-clock-rotate-left mr-1.5 text-brand-500"></i>
+                        <span id="lastUpdated" class="font-bold text-slate-600">Memuatkan masa...</span>
                     </p>
                 </div>
             </div>
