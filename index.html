@@ -23,10 +23,10 @@
     
     <style>
         body { background-color: #f8fafc; overflow: hidden; }
-        /* Transisi lancar untuk sidebar dan ruang utama */
+        /* Transisi lancar */
         #sidebar, #main-content { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .dropdown-content { transition: max-height 0.3s ease-out; overflow: hidden; max-height: 0; }
-        .dropdown-content.open { max-height: 200px; /* Cukup panjang untuk isi submenu */ }
+        .dropdown-content.open { max-height: 200px; }
     </style>
 </head>
 <body class="flex h-screen text-slate-800 antialiased font-sans">
@@ -84,23 +84,23 @@
 
     <div id="main-content" class="flex-1 flex flex-col overflow-y-auto w-full min-h-screen md:ml-72">
         
-        <header class="h-auto min-h-[5rem] py-3 bg-white/80 backdrop-blur-md border-b border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between px-6 md:px-10 sticky top-0 z-10 gap-4 sm:gap-0">
-            <div class="flex items-center">
-                <button id="toggleBtn" class="p-2.5 text-slate-600 hover:bg-slate-100 rounded-xl transition-all bg-slate-50 border border-slate-200 flex-shrink-0">
+        <header class="w-full bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-20 flex items-center justify-between px-4 md:px-8 py-4 h-20 shrink-0">
+            <div class="flex items-center min-w-0">
+                <button id="toggleBtn" class="p-2.5 mr-3 md:mr-4 text-slate-600 hover:bg-slate-100 bg-slate-50 border border-slate-200 rounded-xl transition-all shrink-0">
                     <i class="fa-solid fa-bars-staggered text-xl"></i>
                 </button>
                 
-                <div class="ml-4">
-                    <h1 class="text-xl md:text-2xl font-bold text-slate-800 leading-tight">Dashboard PPKI</h1>
-                    <p class="text-[10px] md:text-xs text-slate-500 font-medium mt-0.5">
-                        <i class="fa-solid fa-cloud-arrow-down mr-1"></i>Data terkini: <span id="lastUpdated" class="font-bold text-brand-600">Menyegerak data...</span>
+                <div class="flex flex-col min-w-0">
+                    <h1 class="text-lg md:text-2xl font-bold text-slate-800 leading-tight truncate">Dashboard PPKI</h1>
+                    <p class="text-[10px] md:text-xs text-slate-500 font-medium mt-0.5 truncate">
+                        <i class="fa-solid fa-cloud-arrow-down mr-1"></i>Data terkini: <span id="lastUpdated" class="font-bold text-brand-600">Menyegerak...</span>
                     </p>
                 </div>
             </div>
 
-            <button id="refreshBtn" class="flex items-center space-x-2 bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl transition-all shadow-sm active:scale-95 group whitespace-nowrap ml-auto sm:ml-0">
+            <button id="refreshBtn" class="ml-3 shrink-0 flex items-center space-x-2 bg-white hover:bg-slate-50 border border-slate-200 px-3 md:px-4 py-2 rounded-xl transition-all shadow-sm active:scale-95 group">
                 <i id="refreshIcon" class="fa-solid fa-arrows-rotate text-brand-600 transition-transform duration-500"></i>
-                <span class="text-xs md:text-sm font-semibold text-slate-700">Muat Semula</span>
+                <span class="hidden md:inline text-xs md:text-sm font-semibold text-slate-700">Muat Semula</span>
             </button>
         </header>
 
