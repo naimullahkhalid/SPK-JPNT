@@ -24,17 +24,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        body { background-color: #f8fafc; }
-        /* Animasi Sidebar */
-        #sidebar { transition: transform 0.3s ease-in-out; }
+        body { background-color: #f8fafc; overflow: hidden; }
+        /* Animasi Lancar */
+        #sidebar { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        #main-content { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .custom-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); }
+        
+        /* Keadaan Sidebar Tertutup */
+        .sidebar-hidden #sidebar { transform: translateX(-100%); }
+        .sidebar-hidden #main-content { margin-left: 0; }
+        
+        /* Desktop Default: Sidebar terbuka, ada margin */
+        @media (min-width: 768px) {
+            #main-content { margin-left: 18rem; } /* 18rem = w-72 */
+        }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden text-slate-800 antialiased font-sans">
+<body class="flex h-screen text-slate-800 antialiased font-sans">
 
-    <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/50 z-20 hidden md:hidden"></div>
+    <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/50 z-20 hidden"></div>
 
-    <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-[#0f172a] text-slate-300 flex flex-col z-30 transform -translate-x-full md:translate-x-0 md:static md:inset-0 shadow-2xl shadow-black/50 md:shadow-none">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-[#0f172a] text-slate-300 flex flex-col z-30 shadow-2xl">
         <div class="h-20 flex items-center justify-between px-8 border-b border-slate-800">
             <div class="flex items-center">
                 <div class="bg-brand-500 p-2 rounded-lg mr-3">
@@ -42,7 +52,7 @@
                 </div>
                 <span class="font-bold text-xl tracking-wide text-white">SPK JPNT</span>
             </div>
-            <button id="closeSidebar" class="md:hidden text-slate-400 hover:text-white">
+            <button id="closeSidebarMobile" class="md:hidden text-slate-400 hover:text-white">
                 <i class="fa-solid fa-xmark text-2xl"></i>
             </button>
         </div>
@@ -62,67 +72,63 @@
         </nav>
     </aside>
 
-    <div class="flex-1 flex flex-col overflow-y-auto relative">
+    <div id="main-content" class="flex-1 flex flex-col overflow-y-auto w-full min-h-screen">
         
         <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-6 md:px-10 sticky top-0 z-10">
             <div class="flex items-center">
-                <button id="openSidebar" class="mr-4 p-2 text-slate-600 hover:bg-slate-100 rounded-lg md:hidden">
+                <button id="toggleSidebar" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors mr-4">
                     <i class="fa-solid fa-bars-staggered text-xl"></i>
                 </button>
                 <div>
                     <h1 class="text-lg md:text-2xl font-bold text-slate-800 leading-tight">Dashboard PPKI</h1>
-                    <p class="hidden sm:block text-xs md:text-sm text-slate-500">Ringkasan data JPN Terengganu</p>
+                    <p class="hidden sm:block text-xs md:text-sm text-slate-500">Pejabat Pendidikan Negeri Terengganu</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3 bg-brand-50 px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-brand-100">
-                <span class="relative flex h-2 w-2 md:h-3 md:w-3">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 md:h-3 md:w-3 bg-brand-500"></span>
-                </span>
-                <span class="text-[10px] md:text-xs font-medium text-brand-700 uppercase tracking-wider">Live</span>
+                <span class="text-[10px] md:text-xs font-semibold text-brand-700 tracking-wider">LIVE DATA</span>
             </div>
         </header>
 
-        <main class="p-4 md:p-10 space-y-6 md:space-y-8 max-w-7xl mx-auto w-full">
+        <main class="p-4 md:p-10 space-y-6 md:space-y-8 max-w-[1600px] mx-auto w-full">
             
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center md:items-start justify-between text-center md:text-left">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 text-center md:text-left">
+                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center justify-between">
                     <div><p class="text-[10px] md:text-sm font-medium text-slate-500 mb-1">Sekolah</p><h2 id="kpi-sekolah" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
-                    <div class="mt-2 md:mt-0 p-2 md:p-3 bg-blue-50 text-blue-500 rounded-xl"><i class="fa-solid fa-school text-sm md:text-xl"></i></div>
+                    <div class="p-2 md:p-3 bg-blue-50 text-blue-500 rounded-xl mt-2 md:mt-0"><i class="fa-solid fa-school text-sm md:text-xl"></i></div>
                 </div>
-                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center md:items-start justify-between text-center md:text-left">
+                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center justify-between">
                     <div><p class="text-[10px] md:text-sm font-medium text-slate-500 mb-1">Kelas</p><h2 id="kpi-kelas" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
-                    <div class="mt-2 md:mt-0 p-2 md:p-3 bg-emerald-50 text-emerald-500 rounded-xl"><i class="fa-solid fa-chalkboard text-sm md:text-xl"></i></div>
+                    <div class="p-2 md:p-3 bg-emerald-50 text-emerald-500 rounded-xl mt-2 md:mt-0"><i class="fa-solid fa-chalkboard text-sm md:text-xl"></i></div>
                 </div>
-                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center md:items-start justify-between text-center md:text-left">
+                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center justify-between">
                     <div><p class="text-[10px] md:text-sm font-medium text-slate-500 mb-1">Guru</p><h2 id="kpi-guru" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
-                    <div class="mt-2 md:mt-0 p-2 md:p-3 bg-violet-50 text-violet-500 rounded-xl"><i class="fa-solid fa-chalkboard-user text-sm md:text-xl"></i></div>
+                    <div class="p-2 md:p-3 bg-violet-50 text-violet-500 rounded-xl mt-2 md:mt-0"><i class="fa-solid fa-chalkboard-user text-sm md:text-xl"></i></div>
                 </div>
-                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center md:items-start justify-between text-center md:text-left">
+                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center justify-between">
                     <div><p class="text-[10px] md:text-sm font-medium text-slate-500 mb-1">MBPK</p><h2 id="kpi-mbpk" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
-                    <div class="mt-2 md:mt-0 p-2 md:p-3 bg-amber-50 text-amber-500 rounded-xl"><i class="fa-solid fa-children text-sm md:text-xl"></i></div>
+                    <div class="p-2 md:p-3 bg-amber-50 text-amber-500 rounded-xl mt-2 md:mt-0"><i class="fa-solid fa-children text-sm md:text-xl"></i></div>
                 </div>
             </div>
 
             <div class="bg-white p-4 md:p-8 rounded-2xl custom-shadow border border-slate-100">
-                <h3 class="text-md md:text-lg font-bold text-slate-800 mb-6">Visualisasi MBPK Mengikut PPD</h3>
-                <div class="h-64 md:h-80 w-full relative">
+                <h3 class="text-md md:text-lg font-bold text-slate-800 mb-6">Analisis Taburan MBPK Mengikut PPD</h3>
+                <div class="h-64 md:h-96 w-full relative">
                     <canvas id="mbpkChart"></canvas>
                 </div>
             </div>
 
             <div class="bg-white rounded-2xl custom-shadow border border-slate-100 overflow-hidden">
-                <div class="p-6 border-b border-slate-100">
-                    <h3 class="text-lg font-bold text-slate-800">Senarai Direktori PPKI</h3>
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-slate-800">Senarai Sekolah PPKI</h3>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm whitespace-nowrap">
-                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider text-[10px] md:text-xs font-semibold">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] md:text-xs font-semibold">
                             <tr>
                                 <th class="px-6 py-4">PPD</th>
                                 <th class="px-6 py-4">Nama Sekolah</th>
-                                <th class="px-6 py-4 text-center">Kelas</th>
-                                <th class="px-6 py-4 text-center">MBPK</th>
+                                <th class="px-6 py-4 text-center">Bil. Kelas</th>
+                                <th class="px-6 py-4 text-center">Bil. MBPK</th>
                             </tr>
                         </thead>
                         <tbody id="table-body" class="divide-y divide-slate-100">
