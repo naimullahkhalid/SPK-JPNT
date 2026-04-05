@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard SPK JPN Terengganu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-gray-800">
+
+    <aside class="w-64 bg-slate-900 text-white flex flex-col hidden md:flex">
+        <div class="h-16 flex items-center justify-center border-b border-slate-700 font-bold text-xl tracking-wider">
+            <i class="fa-solid fa-graduation-cap mr-2 text-blue-400"></i> SPK JPNT
+        </div>
+        <nav class="flex-1 px-4 py-6 space-y-2">
+            <a href="#" class="flex items-center px-4 py-3 bg-blue-600 rounded-lg transition-colors"><i class="fa-solid fa-house mr-3"></i> Halaman Utama</a>
+            
+            <div class="pt-4 pb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Maklumat</div>
+            <a href="#" class="flex items-center px-4 py-2 hover:bg-slate-800 rounded-lg transition-colors"><i class="fa-solid fa-sitemap mr-3"></i> Sektor Pend. Khas</a>
+            <a href="#" class="flex items-center px-4 py-2 hover:bg-slate-800 rounded-lg transition-colors"><i class="fa-solid fa-school mr-3"></i> Maklumat Am</a>
+            
+            <div class="pt-4 pb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Data Pangkalan</div>
+            <a href="#" class="flex items-center px-4 py-2 hover:bg-slate-800 rounded-lg transition-colors"><i class="fa-solid fa-building mr-3"></i> SPK</a>
+            <a href="#" class="flex items-center px-4 py-2 hover:bg-slate-800 rounded-lg transition-colors"><i class="fa-solid fa-chalkboard-user mr-3"></i> PPKI</a>
+            <a href="#" class="flex items-center px-4 py-2 hover:bg-slate-800 rounded-lg transition-colors"><i class="fa-solid fa-users mr-3"></i> PPI</a>
+        </nav>
+    </aside>
+
+    <div class="flex-1 flex flex-col overflow-y-auto">
+        
+        <header class="h-16 glass-panel shadow-sm flex items-center justify-between px-8 z-10">
+            <h1 class="text-xl font-bold text-slate-800">DASHBOARD MAKLUMAT PPKI MENGIKUT PPD</h1>
+            <div class="text-sm text-slate-500">Dikemas kini secara automatik dari Google Sheets</div>
+        </header>
+
+        <main class="p-8 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center space-x-4">
+                    <div class="p-3 bg-blue-100 text-blue-600 rounded-lg"><i class="fa-solid fa-school text-2xl"></i></div>
+                    <div><p class="text-sm text-slate-500 font-medium">Jumlah Sekolah</p><h2 id="kpi-sekolah" class="text-2xl font-bold">0</h2></div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center space-x-4">
+                    <div class="p-3 bg-green-100 text-green-600 rounded-lg"><i class="fa-solid fa-chalkboard text-2xl"></i></div>
+                    <div><p class="text-sm text-slate-500 font-medium">Jumlah Kelas</p><h2 id="kpi-kelas" class="text-2xl font-bold">0</h2></div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center space-x-4">
+                    <div class="p-3 bg-purple-100 text-purple-600 rounded-lg"><i class="fa-solid fa-chalkboard-user text-2xl"></i></div>
+                    <div><p class="text-sm text-slate-500 font-medium">Jumlah Guru</p><h2 id="kpi-guru" class="text-2xl font-bold">0</h2></div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center space-x-4">
+                    <div class="p-3 bg-orange-100 text-orange-600 rounded-lg"><i class="fa-solid fa-children text-2xl"></i></div>
+                    <div><p class="text-sm text-slate-500 font-medium">Jumlah MBPK</p><h2 id="kpi-mbpk" class="text-2xl font-bold">0</h2></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                <h3 class="text-lg font-bold mb-4">Taburan Murid Berkeperluan Pendidikan Khas (MBPK) Mengikut PPD</h3>
+                <div class="h-64">
+                    <canvas id="mbpkChart"></canvas>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                    <h3 class="text-lg font-bold">Senarai Sekolah PPKI</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-pink-600 text-white">
+                            <tr>
+                                <th class="px-6 py-3 font-semibold">PPD</th>
+                                <th class="px-6 py-3 font-semibold">KOD SEKOLAH</th>
+                                <th class="px-6 py-3 font-semibold">NAMA SEKOLAH</th>
+                                <th class="px-6 py-3 font-semibold text-center">BIL KELAS</th>
+                                <th class="px-6 py-3 font-semibold text-center">BIL GURU</th>
+                                <th class="px-6 py-3 font-semibold text-center">BIL PPM</th>
+                                <th class="px-6 py-3 font-semibold text-center">BIL MBPK</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="divide-y divide-slate-100">
+                            <tr><td colspan="7" class="px-6 py-4 text-center text-slate-500">Memuatkan data dari Google Sheets...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
