@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard SPK JPN Terengganu</title>
+    <title>Portal SPK JPN Terengganu</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -25,35 +25,37 @@
     
     <style>
         body { background-color: #f8fafc; overflow: hidden; }
-        /* Animasi Lancar */
-        #sidebar { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        #main-content { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .custom-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); }
+        /* Animasi Sidebar */
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        #main-content { transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        /* Keadaan Sidebar Tertutup */
-        .sidebar-hidden #sidebar { transform: translateX(-100%); }
-        .sidebar-hidden #main-content { margin-left: 0; }
-        
-        /* Desktop Default: Sidebar terbuka, ada margin */
+        /* Keadaan Desktop: Sidebar sorok */
+        .sidebar-collapsed #sidebar { transform: translateX(-100%); }
+        .sidebar-collapsed #main-content { margin-left: 0; }
+
         @media (min-width: 768px) {
-            #main-content { margin-left: 18rem; } /* 18rem = w-72 */
+            #main-content { margin-left: 18rem; } /* w-72 */
         }
+
+        /* Loading Spinner */
+        .loader { border-top-color: #6366f1; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="flex h-screen text-slate-800 antialiased font-sans">
 
-    <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/50 z-20 hidden"></div>
+    <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/50 z-20 hidden transition-opacity"></div>
 
-    <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-[#0f172a] text-slate-300 flex flex-col z-30 shadow-2xl">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-[#0f172a] text-slate-300 flex flex-col z-30 shadow-2xl md:shadow-none">
         <div class="h-20 flex items-center justify-between px-8 border-b border-slate-800">
             <div class="flex items-center">
-                <div class="bg-brand-500 p-2 rounded-lg mr-3">
+                <div class="bg-brand-500 p-2 rounded-lg mr-3 shadow-lg shadow-brand-500/20">
                     <i class="fa-solid fa-graduation-cap text-white text-xl"></i>
                 </div>
-                <span class="font-bold text-xl tracking-wide text-white">SPK JPNT</span>
+                <span class="font-bold text-xl tracking-wide text-white uppercase">SPK JPNT</span>
             </div>
-            <button id="closeSidebarMobile" class="md:hidden text-slate-400 hover:text-white">
-                <i class="fa-solid fa-xmark text-2xl"></i>
+            <button id="closeSidebarMobile" class="md:hidden text-slate-400 hover:text-white p-2">
+                <i class="fa-solid fa-chevron-left text-xl"></i>
             </button>
         </div>
         
@@ -62,13 +64,13 @@
                 <i class="fa-solid fa-house-chimney w-6"></i> Halaman Utama
             </a>
             <div class="px-4 pt-4 pb-2 text-xs font-semibold text-slate-500 uppercase tracking-widest">Maklumat</div>
-            <a href="#" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-all"><i class="fa-solid fa-layer-group w-6 text-slate-400"></i> Sektor Pend. Khas</a>
-            <a href="#" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-all"><i class="fa-solid fa-circle-info w-6 text-slate-400"></i> Maklumat Am</a>
+            <a href="#" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-layer-group w-6 text-slate-400"></i> Sektor Pend. Khas</a>
+            <a href="#" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-circle-info w-6 text-slate-400"></i> Maklumat Am</a>
             
-            <div class="px-4 pt-8 pb-2 text-xs font-semibold text-slate-500 uppercase tracking-widest">Data Pangkalan</div>
-            <a href="#" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-all"><i class="fa-solid fa-building-columns w-6 text-slate-400"></i> SPK</a>
+            <div class="px-4 pt-8 pb-2 text-xs font-semibold text-slate-500 uppercase tracking-widest text-slate-400">Data Pangkalan</div>
+            <a href="#" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-building-columns w-6 text-slate-400"></i> SPK</a>
             <a href="#" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium text-brand-400 bg-slate-800/50 border border-slate-700/50"><i class="fa-solid fa-chalkboard-user w-6"></i> PPKI</a>
-            <a href="#" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 transition-all"><i class="fa-solid fa-users-viewfinder w-6 text-slate-400"></i> PPI</a>
+            <a href="#" class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-800 hover:text-white transition-all"><i class="fa-solid fa-users-viewfinder w-6 text-slate-400"></i> PPI</a>
         </nav>
     </aside>
 
@@ -76,59 +78,63 @@
         
         <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-6 md:px-10 sticky top-0 z-10">
             <div class="flex items-center">
-                <button id="toggleSidebar" class="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors mr-4">
+                <button id="toggleBtn" class="p-2.5 text-slate-600 hover:bg-slate-100 rounded-xl transition-all mr-4 bg-slate-50 border border-slate-200">
                     <i class="fa-solid fa-bars-staggered text-xl"></i>
                 </button>
                 <div>
                     <h1 class="text-lg md:text-2xl font-bold text-slate-800 leading-tight">Dashboard PPKI</h1>
-                    <p class="hidden sm:block text-xs md:text-sm text-slate-500">Pejabat Pendidikan Negeri Terengganu</p>
+                    <p class="hidden sm:block text-xs md:text-sm text-slate-500 font-medium">Sektor Pendidikan Khas JPN Terengganu</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-3 bg-brand-50 px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-brand-100">
-                <span class="text-[10px] md:text-xs font-semibold text-brand-700 tracking-wider">LIVE DATA</span>
-            </div>
+
+            <button id="refreshBtn" class="flex items-center space-x-2 bg-white hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl transition-all shadow-sm active:scale-95 group">
+                <i id="refreshIcon" class="fa-solid fa-arrows-rotate text-brand-600 group-hover:rotate-180 transition-transform duration-500"></i>
+                <span class="text-xs md:text-sm font-semibold text-slate-700">Muat Semula Data</span>
+            </button>
         </header>
 
         <main class="p-4 md:p-10 space-y-6 md:space-y-8 max-w-[1600px] mx-auto w-full">
             
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 text-center md:text-left">
-                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center justify-between">
-                    <div><p class="text-[10px] md:text-sm font-medium text-slate-500 mb-1">Sekolah</p><h2 id="kpi-sekolah" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between text-center md:text-left">
+                    <div><p class="text-[10px] md:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Sekolah</p><h2 id="kpi-sekolah" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
                     <div class="p-2 md:p-3 bg-blue-50 text-blue-500 rounded-xl mt-2 md:mt-0"><i class="fa-solid fa-school text-sm md:text-xl"></i></div>
                 </div>
-                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center justify-between">
-                    <div><p class="text-[10px] md:text-sm font-medium text-slate-500 mb-1">Kelas</p><h2 id="kpi-kelas" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between text-center md:text-left">
+                    <div><p class="text-[10px] md:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Kelas</p><h2 id="kpi-kelas" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
                     <div class="p-2 md:p-3 bg-emerald-50 text-emerald-500 rounded-xl mt-2 md:mt-0"><i class="fa-solid fa-chalkboard text-sm md:text-xl"></i></div>
                 </div>
-                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center justify-between">
-                    <div><p class="text-[10px] md:text-sm font-medium text-slate-500 mb-1">Guru</p><h2 id="kpi-guru" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between text-center md:text-left">
+                    <div><p class="text-[10px] md:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Guru</p><h2 id="kpi-guru" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
                     <div class="p-2 md:p-3 bg-violet-50 text-violet-500 rounded-xl mt-2 md:mt-0"><i class="fa-solid fa-chalkboard-user text-sm md:text-xl"></i></div>
                 </div>
-                <div class="bg-white p-4 md:p-6 rounded-2xl custom-shadow border border-slate-100 flex flex-col md:flex-row items-center justify-between">
-                    <div><p class="text-[10px] md:text-sm font-medium text-slate-500 mb-1">MBPK</p><h2 id="kpi-mbpk" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
+                <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between text-center md:text-left">
+                    <div><p class="text-[10px] md:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">MBPK</p><h2 id="kpi-mbpk" class="text-xl md:text-3xl font-bold text-slate-800">0</h2></div>
                     <div class="p-2 md:p-3 bg-amber-50 text-amber-500 rounded-xl mt-2 md:mt-0"><i class="fa-solid fa-children text-sm md:text-xl"></i></div>
                 </div>
             </div>
 
-            <div class="bg-white p-4 md:p-8 rounded-2xl custom-shadow border border-slate-100">
-                <h3 class="text-md md:text-lg font-bold text-slate-800 mb-6">Analisis Taburan MBPK Mengikut PPD</h3>
+            <div class="bg-white p-4 md:p-8 rounded-3xl shadow-sm border border-slate-100">
+                <h3 class="text-md md:text-lg font-bold text-slate-800 mb-6 flex items-center">
+                    <i class="fa-solid fa-chart-simple mr-2 text-brand-500"></i> Taburan MBPK Mengikut PPD
+                </h3>
                 <div class="h-64 md:h-96 w-full relative">
                     <canvas id="mbpkChart"></canvas>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl custom-shadow border border-slate-100 overflow-hidden">
-                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-slate-800">Senarai Sekolah PPKI</h3>
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="p-6 border-b border-slate-50 bg-slate-50/50">
+                    <h3 class="text-lg font-bold text-slate-800">Senarai Sekolah Terperinci</h3>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm whitespace-nowrap">
-                        <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] md:text-xs font-semibold">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] md:text-xs font-bold tracking-widest">
                             <tr>
                                 <th class="px-6 py-4">PPD</th>
                                 <th class="px-6 py-4">Nama Sekolah</th>
-                                <th class="px-6 py-4 text-center">Bil. Kelas</th>
-                                <th class="px-6 py-4 text-center">Bil. MBPK</th>
+                                <th class="px-6 py-4 text-center">Kelas</th>
+                                <th class="px-6 py-4 text-center">MBPK</th>
                             </tr>
                         </thead>
                         <tbody id="table-body" class="divide-y divide-slate-100">
